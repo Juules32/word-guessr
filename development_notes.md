@@ -1,0 +1,1 @@
+Note: It's very important that the KV_URL for prod must start with: "rediss://" (note the double 's'), otherwise it doesn't work!

@@ -1,7 +1,7 @@
 # game_manager.py
 
 from kv_manager import KeyValueManager
-from model import Puzzle, UserProgress
+from model import Puzzle, UserProgress, State
 
 # Constants
 MAX_GUESSES = 6
@@ -15,7 +15,13 @@ class GameManager:
         progress = self.kv.get_user_progress(userid, date)
         puzzle = self.kv.get_puzzle(date)
         solution = puzzle.solution
+
+        if progress.won:
+            raise Exception("You already won this puzzle!")
         
+        if progress.completed:
+            raise Exception("You already lost this puzzle!")
+
         # Determine new user data
         guesses = progress.guesses
         guesses.append(guess)
@@ -44,7 +50,7 @@ class GameManager:
         
         return stats
     
-    def get_puzzle(self, date: str, userid: str) -> Puzzle:
+    def get_state(self, date: str, userid: str) -> State:
         puzzle_data: Puzzle = self.kv.get_puzzle(date)
 
         if not puzzle_data:
@@ -52,28 +58,27 @@ class GameManager:
 
         user_data = self.kv.get_user_progress(userid, date)
 
-        num_guesses = len(user_data.guesses)
+        if not user_data.completed:
+            num_guesses = len(user_data.guesses)
 
-        hint_priority = {
-            "word_length": 0,
-            "word_type": 2,
-            "synonym": 3,
-            "definition": 4,
-            "pronunciation": 5,
-            "solution": 6
-        }
+            hint_priority = {
+                "word_length": 0,
+                "word_type": 2,
+                "synonym": 3,
+                "definition": 4,
+                "pronunciation": 5,
+                "solution": 6
+            }
 
-        # The hints to filter away (hide)
-        hidden_hints = [k for k, v in hint_priority.items() if v > num_guesses]
+            # The hints to filter away (hide)
+            hidden_hints = [k for k, v in hint_priority.items() if v > num_guesses]
 
-        # Resets each hidden hint to its default value
-        for hidden_hint in hidden_hints:
-            # Default value is obtained by initializing the type class
-            default_value = type(puzzle_data.__getattribute__(hidden_hint))()
+            # Resets each hidden hint to its default value
+            for hidden_hint in hidden_hints:
+                # Default value is obtained by initializing the type class
+                default_value = type(puzzle_data.__getattribute__(hidden_hint))()
 
-            # Attribute is updated
-            puzzle_data.__setattr__(hidden_hint, default_value)
+                # Attribute is updated
+                puzzle_data.__setattr__(hidden_hint, default_value)
         
-        print(puzzle_data)
-        print(user_data)
-        return puzzle_data
+        return State(puzzle=puzzle_data, user_progress=user_data)

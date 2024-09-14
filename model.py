@@ -15,3 +15,7 @@ class UserProgress(BaseModel):
     guesses: list[str] = []
     completed: bool = False
     won: bool = False
+
+class State(BaseModel):
+    puzzle: Puzzle
+    user_progress: UserProgress

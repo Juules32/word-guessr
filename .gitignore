@@ -1,3 +1,4 @@
 .env*
 !.env*.copy
 __pycache__
+TODO.*

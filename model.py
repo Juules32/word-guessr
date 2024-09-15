@@ -1,5 +1,8 @@
 from pydantic import BaseModel
 
+# Constants
+MAX_GUESSES = 6
+
 # Unique information of a daily puzzle
 class Puzzle(BaseModel):
     date: str
@@ -19,3 +22,9 @@ class UserProgress(BaseModel):
 class State(BaseModel):
     puzzle: Puzzle
     user_progress: UserProgress
+
+class PuzzleListItem(BaseModel):
+    date: str
+    num_guesses: int = 0
+    completed: bool = False
+    won: bool = False

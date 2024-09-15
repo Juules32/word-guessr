@@ -2,3 +2,4 @@
 !.env*.copy
 __pycache__
 TODO.*
+.vercel

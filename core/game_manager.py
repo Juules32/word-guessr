@@ -1,10 +1,7 @@
 # game_manager.py
 
-from kv_manager import KeyValueManager
-from model import Puzzle, UserProgress, State
-
-# Constants
-MAX_GUESSES = 6
+from db.kv_manager import KeyValueManager
+from model import Puzzle, PuzzleListItem, UserProgress, State, MAX_GUESSES
 
 class GameManager:
     def __init__(self, kv: KeyValueManager = KeyValueManager()):
@@ -82,3 +79,18 @@ class GameManager:
                 puzzle_data.__setattr__(hidden_hint, default_value)
         
         return State(puzzle=puzzle_data, user_progress=user_data)
+
+    def get_puzzles(self, userid: str) -> list[PuzzleListItem]:
+        puzzle_list_items: list[PuzzleListItem] = []
+
+        all_puzzles = self.kv.get_puzzles()
+        all_user_puzzles = self.kv.get_user_puzzles(userid)
+
+        for date, puzzle in all_puzzles.items():
+            user_puzzle = all_user_puzzles.get(date)
+            if user_puzzle:
+                print("user puzzle exists!")
+                puzzle_list_items.append(PuzzleListItem(date=puzzle.date, num_guesses=len(user_puzzle.guesses)))
+            else:
+                puzzle_list_items.append(PuzzleListItem(date=puzzle.date))
+        return puzzle_list_items

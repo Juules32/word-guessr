@@ -1,7 +1,7 @@
 # data.py
 
-from kv_manager import Puzzle
-from date import get_date_str
+from db.kv_manager import Puzzle
+from util.date import get_date_str
 
 # Example usage
 date1 = get_date_str()

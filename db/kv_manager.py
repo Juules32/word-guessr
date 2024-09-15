@@ -2,6 +2,7 @@
 
 import os
 from typing import Optional
+from pydantic import BaseModel
 import redis
 from model import Puzzle, UserProgress
 
@@ -19,6 +20,7 @@ class KeyValueManager:
         result = self.rc.hget(name="puzzle", key=date)
         if not result:
             return None
+        print(Puzzle)
         return Puzzle.model_validate_json(result)
 
     def set_puzzles(self, puzzles: dict[str, Puzzle]) -> bool:

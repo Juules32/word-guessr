@@ -1,8 +1,8 @@
 # test.py
 
 from dotenv import load_dotenv
-from game_manager import GameManager
-from kv_manager import KeyValueManager
+from core.game_manager import GameManager
+from db.kv_manager import KeyValueManager
 from data import *
 
 load_dotenv()

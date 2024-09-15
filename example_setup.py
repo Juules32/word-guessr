@@ -3,7 +3,7 @@
 from dotenv import load_dotenv
 from core.game_manager import GameManager
 from db.kv_manager import KeyValueManager
-from data import *
+from example_data import *
 
 load_dotenv()
 kv = KeyValueManager()
@@ -15,7 +15,7 @@ kv.set_puzzles(puzzles=puzzles)
 userid = "user_1"
 userid2 = "user_2"
 
-gm.guess(date1, userid, "calm")
+# gm.guess(date1, userid, "calm")
 
 print(kv.get_user_progress(userid, date1))
 print(kv.get_user_puzzles(userid))

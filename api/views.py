@@ -11,4 +11,4 @@ def get_state():
 
 @view_router.get("/puzzles")
 def get_puzzles(request: Request):
-    return templates.TemplateResponse("puzzles.html", {"request": request})
+    return templates.TemplateResponse("views/puzzles.html", {"request": request})

@@ -1,0 +1,12 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Puzzles{% endblock %}
+
+{% block content %}
+<h1>Hi!!!</h1>
+<button hx-get="/htmx/2024-09-14/user_1">get</button>
+<button hx-put="/htmx/2024-09-14/user_1/pee">put</button>
+<div hx-trigger="load once" hx-get="/htmx/puzzle_list">
+    Wow
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 # game_manager.py
 
 from db.kv_manager import KeyValueManager
-from model import Puzzle, PuzzleListItem, UserProgress, State, MAX_GUESSES
+from model.model import Puzzle, PuzzleListItem, UserProgress, State, MAX_GUESSES
 
 class GameManager:
     def __init__(self, kv: KeyValueManager = KeyValueManager()):
@@ -83,14 +83,18 @@ class GameManager:
     def get_puzzles(self, userid: str) -> list[PuzzleListItem]:
         puzzle_list_items: list[PuzzleListItem] = []
 
-        all_puzzles = self.kv.get_puzzles()
+        all_puzzle_dates = self.kv.get_puzzles().keys()
         all_user_puzzles = self.kv.get_user_puzzles(userid)
 
-        for date, puzzle in all_puzzles.items():
+        for date in all_puzzle_dates:
             user_puzzle = all_user_puzzles.get(date)
             if user_puzzle:
-                print("user puzzle exists!")
-                puzzle_list_items.append(PuzzleListItem(date=puzzle.date, num_guesses=len(user_puzzle.guesses)))
+                puzzle_list_items.append(PuzzleListItem(
+                    date=date,
+                    num_guesses=len(user_puzzle.guesses),
+                    completed=user_puzzle.completed,
+                    won=user_puzzle.won
+                ))
             else:
-                puzzle_list_items.append(PuzzleListItem(date=puzzle.date))
+                puzzle_list_items.append(PuzzleListItem(date=date))
         return puzzle_list_items

@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from core.game_manager import GameManager
 from db.kv_manager import KeyValueManager
 
-api_router = APIRouter()
+partial_view_router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 gm = GameManager(kv=KeyValueManager())
 
@@ -16,20 +16,19 @@ def get_template_response(request: Request, file_path: str, data: Any):
         context={"request": request, "data": data}
     )
 
-@api_router.get("/api/{date}/{userid}")
+@partial_view_router.get("/htmx/{date}/{userid}")
 def get_state(request: Request, date: str, userid: str) -> HTMLResponse:
     data = gm.get_state(date, userid)
-    return get_template_response(request, "placeholder.html", data)
+    return get_template_response(request, "partial_views/placeholder.html", data)
 
-@api_router.put("/api/{date}/{userid}/{guess}")
+@partial_view_router.put("/htmx/{date}/{userid}/{guess}")
 def put_guess(request: Request, date: str, userid: str, guess: str) -> HTMLResponse:
     gm.guess(date, userid, guess)
     data = gm.get_state(date, userid)
-    return get_template_response(request, "placeholder.html", data)
+    return get_template_response(request, "partial_views/placeholder.html", data)
 
-@api_router.get("/api/puzzle_list")
+@partial_view_router.get("/htmx/puzzle_list")
 def get_puzzles(request: Request) -> None:
     userid = "user_1" # Should be changed to be generated and stored locally
     data = gm.get_puzzles(userid)
-    print(data)
-    return get_template_response(request, "puzzle_list.html", data)
+    return get_template_response(request, "partial_views/puzzle_list.html", data)

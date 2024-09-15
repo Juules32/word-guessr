@@ -7,7 +7,11 @@
 {% endmacro %}
 
 {% for puzzle_list_item in data %}
-<tr id={{ puzzle_list_item.date }}>
+<tr 
+    id={{ puzzle_list_item.date }}
+    onclick="location.href = '/puzzles/{{ puzzle_list_item.date }}'"
+    onpointerover="this.style.cursor='pointer'"
+>
     <td>{{ puzzle_list_item.date }}</td>
     <td>{{ visualize_guesses(puzzle_list_item.num_guesses, puzzle_list_item.won) }}</td>
     <td>{{ "Won!" if puzzle_list_item.won else ("Lost!" if puzzle_list_item.completed else "Uncompleted!") }}</td>

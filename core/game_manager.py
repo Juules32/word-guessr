@@ -47,7 +47,7 @@ class GameManager:
         
         return stats
     
-    def get_state(self, date: str, userid: str) -> State:
+    def get_puzzle_state(self, date: str, userid: str) -> State:
         puzzle_data: Puzzle = self.kv.get_puzzle(date)
 
         if not puzzle_data:
@@ -81,7 +81,7 @@ class GameManager:
         return State(puzzle=puzzle_data, user_progress=user_data)
 
     def get_puzzles(self, userid: str) -> list[PuzzleListItem]:
-        puzzle_list_items: list[PuzzleListItem] = []
+        puzzles_items: list[PuzzleListItem] = []
 
         all_puzzle_dates = self.kv.get_puzzles().keys()
         all_user_puzzles = self.kv.get_user_puzzles(userid)
@@ -89,12 +89,12 @@ class GameManager:
         for date in all_puzzle_dates:
             user_puzzle = all_user_puzzles.get(date)
             if user_puzzle:
-                puzzle_list_items.append(PuzzleListItem(
+                puzzles_items.append(PuzzleListItem(
                     date=date,
                     num_guesses=len(user_puzzle.guesses),
                     completed=user_puzzle.completed,
                     won=user_puzzle.won
                 ))
             else:
-                puzzle_list_items.append(PuzzleListItem(date=date))
-        return puzzle_list_items
+                puzzles_items.append(PuzzleListItem(date=date))
+        return puzzles_items

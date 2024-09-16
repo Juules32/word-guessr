@@ -3,8 +3,16 @@
 {% block title %}Puzzles{% endblock %}
 
 {% block content %}
-<h1>Hi!!!</h1>
-<button hx-get="/htmx/2024-09-17/user_1">get</button>
-<button hx-put="/htmx/2024-09-17/user_1/pee">put</button>
-<div hx-trigger="load" hx-get="/htmx/puzzle_list">List of Puzzles</div>
+
+    <h1 class="w-full text-center text-2xl">Here is a list of all puzzles</h1>
+    <table class="w-full">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Guesses</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody hx-trigger="load" hx-get="/htmx/puzzles">
+    </table>
 {% endblock %}

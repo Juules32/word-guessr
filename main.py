@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from api.partial_views import partial_view_router
@@ -16,7 +17,7 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(partial_view_router)
 

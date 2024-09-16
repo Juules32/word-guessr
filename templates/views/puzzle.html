@@ -1,0 +1,8 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}WordGuessr - {{ date }}{% endblock %}
+
+{% block content %}
+<h1>Puzzle {{ date }}</h1>
+<div hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}/?userid={{ userid }}">Puzzle data is here</div>
+{% endblock %}

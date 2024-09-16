@@ -1,0 +1,20 @@
+{% macro visualize_guesses(num_guesses, won) %}
+<span>
+{% for i in range(6) %}
+{{ "🟩" if (i + 1 == num_guesses and won) else "⬜" if i >= num_guesses else "🟥"}}
+{% endfor %}
+</span>
+{% endmacro %}
+
+{% for puzzles_item in data %}
+<tr
+    class="text-center"
+    id={{ puzzles_item.date }}
+    onclick="location.href = '/puzzles/{{ puzzles_item.date }}'"
+    onpointerover="this.style.cursor='pointer'"
+>
+    <td class="py-1">{{ puzzles_item.date }}</td>
+    <td class="py-1">{{ visualize_guesses(puzzles_item.num_guesses, puzzles_item.won) }}</td>
+    <td class="py-1">{{ "Won!" if puzzles_item.won else ("Lost!" if puzzles_item.completed else "Uncompleted!") }}</td>
+</tr>
+{% endfor %}

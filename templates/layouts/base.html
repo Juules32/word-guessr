@@ -6,9 +6,14 @@
     <title>{% block title %}My App{% endblock %}</title>
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/svg+xml" href="https://www.svgrepo.com/show/406085/letter-w.svg">
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
 </head>
-<body>
-    {% block content %}{% endblock %}
+<body 
+    class="bg-cyan-600 flex justify-center items-center bg-center bg-cover" 
+    style="background-image: url('/static/img/background.png');"
+>
+    <div class="p-10 shadow-[0_10px_60px_0px_rgba(0,0,0,0.7)] w-screen sm:w-[512px] min-h-screen bg-slate-200">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>

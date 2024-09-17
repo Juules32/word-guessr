@@ -1,2 +1,26 @@
-{{ data.user_progress.completed }}
-{{ data.puzzle.date }}
+{% for i in range(6) %}
+
+<div class="w-full flex justify-center">
+
+    {% for j in range(data.puzzle.word_length) %}
+
+    <div
+        class="{{ 'guess' if i == data.user_progress.guesses|length }} text-white text-xl text-center size-10 min-w-10 border-white border-4 rounded-xl bg-cyan-500 m-[2px]">
+        {{ data.user_progress.guesses[i][j] if data.user_progress.guesses|length >= i+1 }}
+    </div>
+
+    {% endfor %}
+</div>
+
+{% endfor %}
+
+<!-- Debugging information... -->
+<p>Guesses: {{ data.user_progress.guesses }}</p>
+<p>Completed: {{ data.user_progress.completed }}</p>
+<p>Won: {{ data.user_progress.won }}</p>
+<p>Word Length: {{ data.puzzle.word_length or "?" }}</p>
+<p>Word Type: {{ data.puzzle.word_type or "?" }}</p>
+<p>Synonym: {{ data.puzzle.synonym or "?" }}</p>
+<p>Definition: {{ data.puzzle.definition or "?" }}</p>
+<p>Pronunciation: {{ data.puzzle.pronunciation or "?" }}</p>
+<p>Solution: {{ data.puzzle.solution or "?" }}</p>

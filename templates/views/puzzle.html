@@ -3,6 +3,61 @@
 {% block title %}WordGuessr - {{ date }}{% endblock %}
 
 {% block content %}
-<h1>Puzzle {{ date }}</h1>
-<div hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}/?userid={{ userid }}">Puzzle data is here</div>
+<h1 class="text-center text-2xl p-4">Puzzle {{ date }}</h1>
+<div id="puzzleState" hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}">Puzzle data is here</div>
+
+<script>
+    let guess = ""
+
+    // The current row is dynamically given the class name "guess"
+    var letterElements = document.getElementsByClassName("guess");
+
+    function getCurrentDateString() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(now.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+    const sendGuess = () => {
+        htmx.ajax(
+            'GET',
+            `/htmx/puzzles/${getCurrentDateString()}?guess=${guess}`,
+            { target: '#puzzleState' }
+        )
+        guess = ""
+    };
+
+    document.addEventListener('keydown', event => {
+        if (event.key == "Enter") {
+            if (guess.length < letterElements.length) {
+                console.log("Guess too short!")
+            }
+            else {
+                sendGuess();
+            }
+            return
+        }
+
+        if (event.key == "Backspace") {
+            guess = guess.slice(0, -1);
+        }
+        else if (guess.length >= letterElements.length) {
+            return
+        }
+        else {
+            guess += event.key.toUpperCase()
+        }
+        updateGuess();
+    });
+
+    const updateGuess = () => {
+        for (let i = 0; i < letterElements.length; i++) {
+            letterElements[i].innerHTML = guess.charAt(i)
+        }
+    }
+</script>
+
 {% endblock %}

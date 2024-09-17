@@ -2,6 +2,7 @@
 
 from db.kv_manager import KeyValueManager
 from model.model import Puzzle, PuzzleListItem, UserProgress, State, MAX_GUESSES
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 class GameManager:
     def __init__(self, kv: KeyValueManager = KeyValueManager()):
@@ -22,8 +23,8 @@ class GameManager:
         # Determine new user data
         guesses = progress.guesses
         guesses.append(guess)
-        completed = guess == solution or len(guesses) >= MAX_GUESSES
-        won = guess == solution
+        completed = guess.lower() == solution.lower() or len(guesses) >= MAX_GUESSES
+        won = guess.lower() == solution.lower()
         progress = UserProgress(guesses=guesses, completed=completed, won=won)
 
         # Set new user data
@@ -51,7 +52,7 @@ class GameManager:
         puzzle_data: Puzzle = self.kv.get_puzzle(date)
 
         if not puzzle_data:
-            return "Error!"
+            raise StarletteHTTPException(status_code=404, detail="Date not found!")
 
         user_data = self.kv.get_user_progress(userid, date)
 

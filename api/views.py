@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -16,5 +17,4 @@ def get_puzzles(request: Request):
 
 @view_router.get("/puzzles/{date}")
 def get_puzzles(request: Request, date: str):
-    userid = "user_1"
-    return templates.TemplateResponse("views/puzzle.html", {"request": request, "date": date, "userid": userid})
+    return templates.TemplateResponse("views/puzzle.html", {"request": request, "date": date})

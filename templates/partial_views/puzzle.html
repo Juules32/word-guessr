@@ -5,7 +5,7 @@
     {% for j in range(data.puzzle.word_length) %}
 
     <div
-        class="{{ 'guess' if i == data.user_progress.guesses|length }} text-white text-xl text-center size-10 min-w-10 border-white border-4 rounded-xl bg-cyan-500 m-[2px]">
+        class="{{ 'guess' if i == data.user_progress.guesses|length }} text-white text-xl text-center min-w-4 max-w-10 h-10 size-full border-white border-4 rounded-xl bg-cyan-500 m-[2px]">
         {{ data.user_progress.guesses[i][j] if data.user_progress.guesses|length >= i+1 }}
     </div>
 

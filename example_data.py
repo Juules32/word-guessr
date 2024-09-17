@@ -9,6 +9,7 @@ date2 = get_date_str(1)
 date3 = get_date_str(2)
 date4 = get_date_str(3)
 date5 = get_date_str(4)
+date6 = get_date_str(5)
 
 puzzle1 = Puzzle(
     date=date1,
@@ -54,10 +55,20 @@ puzzle5 = Puzzle(
     date=date5,
     word_length=10,
     word_type="noun",
-    synonym="dishonesty",
+    synonym="deceit",
     definition="lack of honesty or integrity : disposition to defraud or deceive",
     pronunciation="file_path",
     solution="dishonesty"
+)
+
+puzzle6 = Puzzle(
+    date=date6,
+    word_length=14,
+    word_type="verb",
+    synonym="bamboozle",
+    definition="to cause to be in a state of confusion",
+    pronunciation="file_path",
+    solution="discombobulate"
 )
 
 puzzles = {
@@ -65,5 +76,6 @@ puzzles = {
     date2: puzzle2,
     date3: puzzle3,
     date4: puzzle4,
-    date5: puzzle5
+    date5: puzzle5,
+    date6: puzzle6
 }

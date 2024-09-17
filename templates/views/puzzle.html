@@ -13,19 +13,10 @@
     // The current row is dynamically given the class name "guess"
     var letterElements = document.getElementsByClassName("guess");
 
-    function getCurrentDateString() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-        const day = String(now.getDate()).padStart(2, '0');
-
-        return `${year}-${month}-${day}`;
-    }
-
     const sendGuess = () => {
         htmx.ajax(
             'GET',
-            `/htmx/puzzles/${getCurrentDateString()}?guess=${guess}`,
+            `/htmx/puzzles/{{ date }}?guess=${guess}`,
             { target: '#puzzleState' }
         )
         guess = ""

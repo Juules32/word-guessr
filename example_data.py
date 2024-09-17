@@ -32,7 +32,7 @@ puzzle2 = Puzzle(
 
 puzzle3 = Puzzle(
     date=date3,
-    word_length=4,
+    word_length=6,
     word_type="noun",
     synonym="tiny",
     definition="an insignificant or tiny person",

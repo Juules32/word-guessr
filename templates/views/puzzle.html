@@ -4,9 +4,8 @@
 
 {% block content %}
 <h1 class="text-center text-2xl p-4">Puzzle {{ date }}</h1>
-<input style="opacity:0;" autofocus>
-    <div id="puzzleState" hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}">Puzzle data is here</div>
-</input>
+<input id="invisibleInput" class="opacity-0" onload="openKeyboard()">
+<div id="puzzleState" hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}" onclick="openKeyboard()">Puzzle data is here</div>
 <a class="bg-cyan-500 rounded-md" href="/puzzles">Play Other Puzzles</a>
 <!-- Hidden input field to trigger mobile keyboard -->
 <input type="text" id="keyboardInput" style="opacity:0; position:absolute; top:-100px;" autocomplete="off">
@@ -16,6 +15,11 @@
 
     // The current row is dynamically given the class name "guess"
     var letterElements = document.getElementsByClassName("guess");
+
+    const openKeyboard = () => {
+        const invisibleInput = document.getElementById("invisibleInput");
+        invisibleInput.focus();
+    }
 
     const sendGuess = () => {
         htmx.ajax(

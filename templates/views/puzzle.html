@@ -4,11 +4,9 @@
 
 {% block content %}
 <h1 class="text-center text-2xl p-4">Puzzle {{ date }}</h1>
-<input id="invisibleInput" class="opacity-0">
+<input id="invisibleInput" type="text" class="opacity-0">
 <div id="puzzleState" hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}">Puzzle data is here</div>
 <a class="bg-cyan-500 rounded-md" href="/puzzles">Play Other Puzzles</a>
-<!-- Hidden input field to trigger mobile keyboard -->
-<input type="text" id="keyboardInput" style="opacity:0; position:absolute; top:-100px;" autocomplete="off">
 
 <script>
     let guess = ""

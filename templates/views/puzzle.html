@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1 class="text-center text-2xl p-4">Puzzle {{ date }}</h1>
-<input hidden autofocus>
+<input style="opacity:0;" autofocus>
     <div id="puzzleState" hx-trigger="load" hx-get="/htmx/puzzles/{{ date }}">Puzzle data is here</div>
 </input>
 <a class="bg-cyan-500 rounded-md" href="/puzzles">Play Other Puzzles</a>

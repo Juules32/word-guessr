@@ -34,17 +34,15 @@ class GameManager:
         puzzle_data = self.kv.get_user_puzzles(userid)
 
         stats = {str(i): 0 for i in range(1, MAX_GUESSES + 1)}
-        stats["More"] = 0
+        stats["X"] = 0
 
         for puzzle in puzzle_data.values():
             if not puzzle.completed:
                 continue
-            
-            guesses = puzzle.guesses
-            if len(guesses) <= MAX_GUESSES:
-                stats[str(len(guesses))] += 1
-            else:
-                stats["More"] += 1
+            if not puzzle.won:
+                stats["X"] += 1
+            elif len(puzzle.guesses) <= MAX_GUESSES:
+                stats[str(len(puzzle.guesses))] += 1
         
         return stats
     

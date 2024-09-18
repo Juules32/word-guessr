@@ -37,10 +37,7 @@
         if (event.key == "Backspace") {
             guess = guess.slice(0, -1);
         }
-        else if (guess.length >= letterElements.length) {
-            return
-        }
-        else {
+        else if (guess.length < letterElements.length && event.code === `Key${event.key.toUpperCase()}`) {
             guess += event.key.toUpperCase()
         }
         updateGuess();

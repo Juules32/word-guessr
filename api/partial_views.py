@@ -27,3 +27,9 @@ def get_puzzles(request: Request, date: str, userid: str, guess: str = None) -> 
         gm.guess(date, userid, guess)
     data = gm.get_puzzle_state(date=date, userid=userid)
     return get_template_response(request, "partial_views/puzzle.html", data)
+
+@partial_view_router.get("/htmx/stats")
+def get_puzzles(request: Request, userid: str) -> HTMLResponse:
+    data = gm.get_user_stats(userid)
+    print(data)
+    return get_template_response(request, "partial_views/stats.html", data)

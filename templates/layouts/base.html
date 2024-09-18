@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +9,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
 </head>
-<body 
-    class="bg-cyan-600 flex justify-center items-center bg-center bg-cover" 
-    style="background-image: url('/static/img/background.webp');"
->
-    <div class="min-w-[320px] pt-10 sm:px-8 shadow-[0_10px_60px_0px_rgba(0,0,0,0.7)] w-screen sm:w-[512px] min-h-screen bg-slate-200">
+
+<body class="bg-cyan-500 flex justify-center items-center bg-center bg-cover"
+    style="background-image: url('/static/img/background.webp');">
+    <div
+        class="min-w-[320px] pt-10 sm:px-8 shadow-[0_10px_60px_0px_rgba(0,0,0,0.7)] w-screen sm:w-[512px] min-h-screen bg-slate-200">
         {% block content %}{% endblock %}
     </div>
 </body>
 
 <script>
     function generateAndSetUUID() {
-        const userid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const userid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
@@ -30,8 +31,21 @@
     var userid = localStorage.getItem('userid') || generateAndSetUUID();
 
     // userid is always sent with the header of htmx requests
-    document.body.addEventListener('htmx:configRequest', function(evt) {
+    document.body.addEventListener('htmx:configRequest', function (evt) {
         evt.detail.parameters['userid'] = userid
     });
 </script>
+
+<style>
+    @keyframes widthGrow {
+        from {
+            width: 0%;
+        }
+
+        to {
+            width: var(--final-width);
+        }
+    }
+</style>
+
 </html>

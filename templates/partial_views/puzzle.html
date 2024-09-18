@@ -14,13 +14,14 @@
 
 {% endfor %}
 
-<!-- Debugging information... -->
-<p>Guesses: {{ data.user_progress.guesses }}</p>
 <p>Completed: {{ data.user_progress.completed }}</p>
 <p>Won: {{ data.user_progress.won }}</p>
-<p>Word Length: {{ data.puzzle.word_length or "?" }}</p>
 <p>Word Type: {{ data.puzzle.word_type or "?" }}</p>
 <p>Synonym: {{ data.puzzle.synonym or "?" }}</p>
 <p>Definition: {{ data.puzzle.definition or "?" }}</p>
 <p>Pronunciation: {{ data.puzzle.pronunciation or "?" }}</p>
 <p>Solution: {{ data.puzzle.solution or "?" }}</p>
+
+{% if data.user_progress.completed %}
+    <div hx-trigger="load" hx-get="/htmx/stats">Stats will be displayed here</div>
+{% endif %}

@@ -1,0 +1,8 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Stats{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl text-center">User Stats</h1>
+<div hx-trigger="load" hx-get="/htmx/stats">Stats will be displayed here</div>
+{% endblock %}

@@ -18,3 +18,7 @@ def get_puzzles(request: Request):
 @view_router.get("/puzzles/{date}")
 def get_puzzles(request: Request, date: str):
     return templates.TemplateResponse("views/puzzle.html", {"request": request, "date": date})
+
+@view_router.get("/stats")
+def get_puzzles(request: Request):
+    return templates.TemplateResponse("views/stats.html", {"request": request})

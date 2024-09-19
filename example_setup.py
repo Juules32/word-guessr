@@ -10,7 +10,10 @@ kv = KeyValueManager()
 gm = GameManager(kv)
 
 # Set and get puzzle
-kv.set_puzzles(puzzles=puzzles)
+def setup():
+    kv.set_puzzles(puzzles=puzzles)
+
+setup()
 
 # userid = "user_1"
 # userid2 = "user_2"

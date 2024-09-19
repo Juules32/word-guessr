@@ -3,12 +3,13 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from api.partial_views import partial_view_router
 from api.views import view_router
+from example_setup import setup
 
 # Custom path can be given to experiment locally with different env vars.
 load_dotenv()
@@ -29,3 +30,10 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
     if exc.status_code == 404:
         return templates.TemplateResponse("errors/404.html", {"request": request}, status_code=404)
     return HTMLResponse(str(exc.detail), status_code=exc.status_code)
+
+# Example cron job for setting up puzzles
+@app.get("/cron")
+def get_cron():
+    setup()
+    json = {"result": "success"}
+    return JSONResponse(json)

@@ -13,7 +13,7 @@ gm = GameManager(kv)
 def setup():
     kv.set_puzzles(puzzles=puzzles)
 
-setup()
+# setup()
 
 # userid = "user_1"
 # userid2 = "user_2"

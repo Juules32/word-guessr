@@ -46,6 +46,10 @@ def get_random_puzzle_data(date: str) -> Puzzle:
     print(f"Getting data for: {word}")
 
     r = httpx.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}")
+    if r.status_code == 404:
+        print(f"{word} not found in dictionary, restarting...\n")
+        return get_random_puzzle_data(date)
+
     if r.status_code != 200:
         print("Improper response from dictionary api, aborting...")
         return None
@@ -111,18 +115,20 @@ def get_random_puzzle_data(date: str) -> Puzzle:
         solution=word.capitalize()
     )
 
-    print(f"Success! Returning puzzle data for: {word}")
+    print(f"Success! Returning puzzle data for: {word}\n")
     return new_puzzle
 
-kv = KeyValueManager()
-
 def generate_tomorrows_puzzle() -> None:
+    kv = KeyValueManager()
     tomorrow = get_date_str(1)
-    new_puzzle = get_random_puzzle_data(tomorrow)
-    kv.set_puzzle(tomorrow, new_puzzle)
+    new_puzzle = get_random_puzzle_data(date=tomorrow)
+    if new_puzzle:
+        kv.set_puzzle(tomorrow, new_puzzle)
 
 def generate_10_puzzles() -> None:
+    kv = KeyValueManager()
     for i in range(10):
-        date = get_date_str(i)
+        date = get_date_str(-i)
         new_puzzle =  get_random_puzzle_data(date=date)
-        kv.set_puzzle(date, new_puzzle)
+        if new_puzzle:
+            kv.set_puzzle(date, new_puzzle)

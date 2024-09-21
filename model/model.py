@@ -10,7 +10,11 @@ class Puzzle(BaseModel):
     word_type: str
     synonym: str
     definition: str
-    pronunciation_base64: str # base64 encoded audio file
+    
+    # Pronunciation audio is stored as a base64 string to:
+    # - Be able to store as json
+    # - Be able to decode in the browser
+    pronunciation_base64: str
     solution: str
 
 # User progress of a puzzle

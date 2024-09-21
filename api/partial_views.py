@@ -3,11 +3,10 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from core.game_manager import GameManager
-from db.kv_manager import KeyValueManager
 
 partial_view_router = APIRouter()
 templates = Jinja2Templates(directory="templates")
-gm = GameManager(kv=KeyValueManager())
+gm = GameManager()
 
 def get_template_response(request: Request, file_path: str, data: Any):
     return templates.TemplateResponse(

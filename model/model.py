@@ -10,7 +10,7 @@ class Puzzle(BaseModel):
     word_type: str
     synonym: str
     definition: str
-    pronunciation: str # Should be file
+    pronunciation_base64: str # base64 encoded audio file
     solution: str
 
 # User progress of a puzzle

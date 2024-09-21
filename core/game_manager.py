@@ -62,7 +62,7 @@ class GameManager:
                 "word_type": 2,
                 "synonym": 3,
                 "definition": 4,
-                "pronunciation": 5,
+                "pronunciation_base64": 5,
                 "solution": 6
             }
 

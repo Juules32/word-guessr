@@ -14,13 +14,30 @@
 
 {% endfor %}
 
-<p>Completed: {{ data.user_progress.completed }}</p>
-<p>Won: {{ data.user_progress.won }}</p>
-<p>Word Type: {{ data.puzzle.word_type or "?" }}</p>
-<p>Synonym: {{ data.puzzle.synonym or "?" }}</p>
-<p>Definition: {{ data.puzzle.definition or "?" }}</p>
-<p>Pronunciation: {{ data.puzzle.pronunciation or "?" }}</p>
-<p>Solution: {{ data.puzzle.solution or "?" }}</p>
+{% if data.puzzle.word_type %}
+<p>Word Type: {{ data.puzzle.word_type }}</p>
+{% endif %}
+
+{% if data.puzzle.synonym %}
+<p>Synonym: {{ data.puzzle.synonym }}</p>
+{% endif %}
+
+{% if data.puzzle.definition %}
+<p>Definition: {{ data.puzzle.definition }}</p>
+{% endif %}
+
+{% if data.puzzle.pronunciation_base64 %}
+<p>Pronunciation: 
+<audio controls>
+    <source src="data:audio/mpeg;base64,{{ data.puzzle.pronunciation_base64 }}" type="audio/mpeg">
+  Your browser does not support the audio element.
+  </audio>
+</p>
+{% endif %}
+
+{% if data.puzzle.solution %}
+<p>Solution: {{ data.puzzle.solution }}</p>
+{% endif %}
 
 {% if data.user_progress.completed %}
     <div hx-trigger="load" hx-get="/htmx/stats">Stats will be displayed here</div>

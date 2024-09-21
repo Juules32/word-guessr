@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from api.partial_views import partial_view_router
 from api.views import view_router
-from example_setup import setup
+from daily_puzzle_generation import generate_tomorrows_puzzle
 
 # Custom path can be given to experiment locally with different env vars.
 load_dotenv()
@@ -31,9 +31,9 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
         return templates.TemplateResponse("errors/404.html", {"request": request}, status_code=404)
     return HTMLResponse(str(exc.detail), status_code=exc.status_code)
 
-# Example cron job for setting up puzzles
-@app.get("/cron")
-def get_cron():
-    setup()
+# Endpoint for daily cron event
+@app.get("/cron/puzzle/generate")
+def get_cron() -> JSONResponse:
+    generate_tomorrows_puzzle()
     json = {"result": "success"}
     return JSONResponse(json)

@@ -1,5 +1,8 @@
+import os
 import random
+import string
 from typing import Optional
+from dotenv import load_dotenv
 import httpx
 import re
 from model.model import Puzzle
@@ -7,25 +10,28 @@ from util.date import get_date_str
 import base64
 from db.kv_manager import KeyValueManager
 
+load_dotenv()
+
+
 MIN_WORD_LENGTH = 4
 MAX_WORD_LENGTH = 14
 
 def is_valid(word: str) -> bool:
     return len(word) >= MIN_WORD_LENGTH and len(word) <= MAX_WORD_LENGTH
 
-def get_valid_words() -> str:
-    with open("data/common_words.txt", "r") as word_file:
+def get_valid_words(file_name: str) -> str:
+    with open(f"data/{file_name}", "r") as word_file:
         word_list = word_file.read().split("\n")
         valid_words = filter(is_valid, word_list)
         return "\n".join(valid_words)
 
-def write_valid_words() -> None:
-    valid_words = get_valid_words()
-    with open("data/common_words.txt", "w") as word_file:
+def write_valid_words(file_name: str) -> None:
+    valid_words = get_valid_words(file_name)
+    with open(f"data/{file_name}", "w") as word_file:
         word_file.write(valid_words)
 
-def get_random_word() -> str:
-    with open("data/common_words.txt", "r") as word_file:
+def get_random_word(file_name: str) -> str:
+    with open(f"data/{file_name}", "r") as word_file:
         return random.choice(word_file.read().split("\n"))
 
 def fetch_audio_file(url: str) -> Optional[bytes]:
@@ -37,69 +43,71 @@ def fetch_audio_file(url: str) -> Optional[bytes]:
         print(f"Error fetching audio: {e}")
     return None
 
-def get_random_puzzle_data(date: str) -> Puzzle:
-    word = get_random_word()
+def get_random_puzzle_data(date: str, is_school: bool = False) -> Puzzle:
+    word = get_random_word("all_words.txt")
     if not word:
         print("Could not get random word, aborting...")
         return None
     
     print(f"Getting data for: {word}")
 
-    r = httpx.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}")
+    if is_school:
+        r = httpx.get(f"https://dictionaryapi.com/api/v3/references/sd4/json/{word}", params={"key": os.getenv("SCHOOL_DICT_KEY")})
+    else:
+        r = httpx.get(f"https://dictionaryapi.com/api/v3/references/collegiate/json/{word}", params={"key": os.getenv("DICT_KEY")})
+    
     if r.status_code == 404:
         print(f"{word} not found in dictionary, restarting...\n")
-        return get_random_puzzle_data(date)
+        return get_random_puzzle_data(date, is_school)
 
     if r.status_code != 200:
         print("Improper response from dictionary api, aborting...")
         return None
 
-    content: list[dict] = r.json()
+    content: list[dict] = r.json()[0]
 
-    meaning: dict = content[0]["meanings"][0]
-    if not meaning:
-        print(f"{word.capitalize()} didn't have meaning, restarting...\n")
-        return get_random_puzzle_data(date)
-    
-    word_type: str = meaning.get("partOfSpeech")
-    if not word_type:
+    try:
+        word_type: str = content["fl"]
+    except:
         print(f"{word.capitalize()} didn't have word type, restarting...\n")
-        return get_random_puzzle_data(date)
+        return get_random_puzzle_data(date, is_school)
     
-    definitions: str = meaning.get("definitions")
-    if not definitions:
-        print(f"{word.capitalize()} didn't have definitions, restarting...\n")
-        return get_random_puzzle_data(date)
-
-    definition: str = definitions[0].get("definition")
-    if not definition:
+    try:
+        definition: str = content["shortdef"][0]
+    except:
         print(f"{word.capitalize()} didn't have definition, restarting...\n")
-        return get_random_puzzle_data(date)
+        return get_random_puzzle_data(date, is_school)
 
-    synonyms = meaning.get("synonyms")
-    if not synonyms:
-        print(f"{word.capitalize()} didn't have synonyms, restarting...\n")
-        return get_random_puzzle_data(date)
+    try:
+        synonym: str = content["syns"][0]["pt"][0][1]
+    except:
+        synonym = "None"
 
-    synonym = synonyms[0]
-
-    phonetics: list[dict] = content[0].get("phonetics")
-    if not phonetics:
-        print(f"{word.capitalize()} didn't have phonetics, restarting...\n")
-        return get_random_puzzle_data(date)
-
-    pronunciation_url = phonetics[0].get("audio")
-    if not pronunciation_url:
-        print(f"{word.capitalize()} didn't have pronunciation url, restarting...\n")
-        return get_random_puzzle_data(date)
+    try:
+        pronunciation_str: str = content["hwi"]["prs"][0]["sound"]["audio"]
+    except:
+        print(f"{word.capitalize()} didn't have pronunciation data, restarting...\n")
+        return get_random_puzzle_data(date, is_school)
     
-    pronunciation_audio = fetch_audio_file(pronunciation_url)
-    if not pronunciation_audio:
+    if pronunciation_str.startswith("bix"):
+        subdirectory = "bix"
+    elif pronunciation_str.startswith("gg"):
+        subdirectory = "gg"
+    elif pronunciation_str[0].isdigit() or pronunciation_str[0] in string.punctuation:
+        subdirectory = "number"
+    else:
+        subdirectory = pronunciation_str[0]
+
+    pronunciation_url = f"https://media.merriam-webster.com/audio/prons/en/us/mp3/{subdirectory}/{pronunciation_str}.mp3"
+
+    try:
+        pronunciation_audio = fetch_audio_file(pronunciation_url)
+    except:
         print(f"Failed to fetch audio for {word}, aborting...")
         return None
 
     pronunciation_base64 = base64.b64encode(pronunciation_audio).decode('utf-8')
-
+    
     # Hides instances of the solution
     insensitive_instance = re.compile(re.escape(word), re.IGNORECASE)
     synonym = insensitive_instance.sub("_" * len(word), synonym)
@@ -108,15 +116,18 @@ def get_random_puzzle_data(date: str) -> Puzzle:
     new_puzzle = Puzzle(
         date=date,
         word_length=len(word),
-        word_type=word_type.capitalize(),
-        synonym=synonym.capitalize(),
-        definition=definition,
+        word_type=capitalize_first_letter(word_type),
+        synonym=capitalize_first_letter(synonym),
+        definition=capitalize_first_letter(definition),
         pronunciation_base64=pronunciation_base64,
         solution=word.capitalize()
     )
 
     print(f"Success! Returning puzzle data for: {word}\n")
     return new_puzzle
+
+def capitalize_first_letter(input: str) -> str:
+    return input[0].upper() + input[1:]
 
 def generate_tomorrows_puzzle() -> None:
     kv = KeyValueManager()
@@ -132,3 +143,5 @@ def generate_10_puzzles() -> None:
         new_puzzle =  get_random_puzzle_data(date=date)
         if new_puzzle:
             kv.set_puzzle(date, new_puzzle)
+
+get_random_puzzle_data(get_date_str(), is_school=True)

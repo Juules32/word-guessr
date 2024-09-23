@@ -80,6 +80,13 @@ def get_random_puzzle_data(date: str, is_school: bool = False) -> Puzzle:
 
     try:
         synonym: str = content["syns"][0]["pt"][0][1]
+
+        # All synonyms, which are in {sc} tags in merriam-webster's api, are found
+        merriam_synonyms: list[str] = re.findall(r'\{sc\}(.*?)\{/sc\}', synonym)
+
+        # Note: set comprehension is used to eliminate duplicates
+        unique_synonyms = {word.capitalize() for word in merriam_synonyms}
+        synonym = ', '.join(unique_synonyms)
     except:
         synonym = "None"
 
@@ -143,5 +150,3 @@ def generate_10_puzzles() -> None:
         new_puzzle =  get_random_puzzle_data(date=date)
         if new_puzzle:
             kv.set_puzzle(date, new_puzzle)
-
-get_random_puzzle_data(get_date_str(), is_school=True)

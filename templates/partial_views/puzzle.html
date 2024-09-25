@@ -1,13 +1,3 @@
-{% macro get_bg_color(color) %}
-{% if color == "yellow" %}
-bg-yellow-400
-{% elif color == "green" %}
-bg-green-400
-{% else %}
-bg-slate-400
-{% endif %}
-{% endmacro %}
-
 {% for i in range(6) %}
 
 <div onclick="document.getElementById('invisibleInput').focus()" class="w-full flex justify-center">
@@ -15,7 +5,7 @@ bg-slate-400
     {% for j in range(data.puzzle.word_length) %}
 
     <div
-        class="{{ 'guess' if i == data.user_progress.guesses|length }} text-white text-xl text-center min-w-4 max-w-10 h-10 size-full border-white border-4 rounded-xl {{ get_bg_color(data.user_progress.guesses[i][j].color) if data.user_progress.guesses|length >= i+1 else 'bg-slate-400' }} m-[2px]">
+        class="{{ 'guess' if i == data.user_progress.guesses|length }} text-white text-xl text-center min-w-4 max-w-10 h-10 size-full border-white border-4 rounded-xl {{ data.user_progress.guesses[i][j].color if data.user_progress.guesses|length >= i+1 else 'light-grey' }} m-[2px]">
         {{ data.user_progress.guesses[i][j].character if data.user_progress.guesses|length >= i+1 }}
     </div>
 

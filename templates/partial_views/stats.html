@@ -9,7 +9,7 @@
         <span class="min-w-4">{{ k }}</span>
         <div class="bg-white w-full rounded-sm">
             <div 
-                class="rounded-sm {{'bg-red-500' if k == 'X' else 'bg-green-500'}} w-[{{ percent_width }}] animate-[widthGrow_0.5s_ease-in-out]"
+                class="rounded-sm {{'red' if k == 'X' else 'green'}} w-[{{ percent_width }}] animate-[widthGrow_0.5s_ease-in-out]"
                 style="--final-width: {{ percent_width }}"
             >
                 <p class="text-right pr-2">{{ v if v }}</p>

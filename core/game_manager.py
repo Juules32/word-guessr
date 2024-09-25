@@ -124,4 +124,5 @@ class GameManager:
                 ))
             else:
                 puzzles_items.append(PuzzleListItem(date=date))
+        puzzles_items.sort(key=lambda item : item.date)
         return puzzles_items

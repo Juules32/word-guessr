@@ -1,5 +1,6 @@
 # main.py
 
+import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi import FastAPI
@@ -33,7 +34,15 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
 
 # Endpoint for daily cron event
 @app.get("/cron/puzzle/generate")
-def get_cron() -> JSONResponse:
-    generate_tomorrows_puzzle()
-    json = {"result": "success"}
-    return JSONResponse(json)
+def get_cron(request: Request) -> JSONResponse:
+    authorization_header = request.headers.get("authorization")
+
+    if not authorization_header:
+        return JSONResponse({"error": "Missing authorization header"}, status_code=401)
+
+    if authorization_header != f"Bearer {os.getenv("CRON_SECRET")}":
+        return JSONResponse({"error": "Invalid authorization header"}, status_code=403)
+
+    else:
+        generate_tomorrows_puzzle()
+        return JSONResponse({"result": "success"})

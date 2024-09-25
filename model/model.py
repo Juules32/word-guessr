@@ -17,9 +17,13 @@ class Puzzle(BaseModel):
     pronunciation_base64: str
     solution: str
 
+class Letter(BaseModel):
+    character: str
+    color: str
+
 # User progress of a puzzle
 class UserProgress(BaseModel):
-    guesses: list[str] = []
+    guesses: list[list[Letter]] = []
     completed: bool = False
     won: bool = False
 

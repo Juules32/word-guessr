@@ -12,14 +12,13 @@ from db.kv_manager import KeyValueManager
 
 load_dotenv()
 
-
 MIN_WORD_LENGTH = 4
 MAX_WORD_LENGTH = 14
 
-def is_valid(word: str) -> bool:
-    return len(word) >= MIN_WORD_LENGTH and len(word) <= MAX_WORD_LENGTH
-
 def get_valid_words(file_name: str) -> str:
+    def is_valid(word: str) -> bool:
+        return len(word) >= MIN_WORD_LENGTH and len(word) <= MAX_WORD_LENGTH
+
     with open(f"data/{file_name}", "r") as word_file:
         word_list = word_file.read().split("\n")
         valid_words = filter(is_valid, word_list)
@@ -36,9 +35,9 @@ def get_random_word(file_name: str) -> str:
 
 def fetch_audio_file(url: str) -> Optional[bytes]:
     try:
-        r = httpx.get(url)
-        if r.status_code == 200:
-            return r.content # Return audio content as bytes
+        response = httpx.get(url)
+        if response.status_code == 200:
+            return response.content # Return audio content as bytes
     except Exception as e:
         print(f"Error fetching audio: {e}")
     return None
@@ -52,30 +51,30 @@ def get_random_puzzle_data(date: str, is_school: bool = False) -> Puzzle:
     print(f"Getting data for: {word}")
 
     if is_school:
-        r = httpx.get(f"https://dictionaryapi.com/api/v3/references/sd4/json/{word}", params={"key": os.getenv("SCHOOL_DICT_KEY")})
+        response = httpx.get(f"https://dictionaryapi.com/api/v3/references/sd4/json/{word}", params={"key": os.getenv("SCHOOL_DICT_KEY")})
     else:
-        r = httpx.get(f"https://dictionaryapi.com/api/v3/references/collegiate/json/{word}", params={"key": os.getenv("DICT_KEY")})
+        response = httpx.get(f"https://dictionaryapi.com/api/v3/references/collegiate/json/{word}", params={"key": os.getenv("DICT_KEY")})
     
-    if r.status_code == 404:
+    if response.status_code == 404:
         print(f"{word} not found in dictionary, restarting...\n")
         return get_random_puzzle_data(date, is_school)
 
-    if r.status_code != 200:
+    if response.status_code != 200:
         print("Improper response from dictionary api, aborting...")
         return None
 
-    content: list[dict] = r.json()[0]
+    content: list[dict] = response.json()[0]
 
     try:
         word_type: str = content["fl"]
     except:
-        print(f"{word.capitalize()} didn't have word type, restarting...\n")
+        print(f"{word} didn't have word type, restarting...\n")
         return get_random_puzzle_data(date, is_school)
     
     try:
         definition: str = content["shortdef"][0]
     except:
-        print(f"{word.capitalize()} didn't have definition, restarting...\n")
+        print(f"{word} didn't have definition, restarting...\n")
         return get_random_puzzle_data(date, is_school)
 
     try:
@@ -85,7 +84,7 @@ def get_random_puzzle_data(date: str, is_school: bool = False) -> Puzzle:
         merriam_synonyms: list[str] = re.findall(r'\{sc\}(.*?)\{/sc\}', synonym)
 
         # Note: set comprehension is used to eliminate duplicates
-        unique_synonyms = {word.capitalize() for word in merriam_synonyms}
+        unique_synonyms = {synonym.capitalize() for synonym in merriam_synonyms}
         synonym = ', '.join(unique_synonyms)
     except:
         synonym = "None"
@@ -93,7 +92,7 @@ def get_random_puzzle_data(date: str, is_school: bool = False) -> Puzzle:
     try:
         pronunciation_str: str = content["hwi"]["prs"][0]["sound"]["audio"]
     except:
-        print(f"{word.capitalize()} didn't have pronunciation data, restarting...\n")
+        print(f"{word} didn't have pronunciation data, restarting...\n")
         return get_random_puzzle_data(date, is_school)
     
     if pronunciation_str.startswith("bix"):

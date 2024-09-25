@@ -40,7 +40,7 @@ def get_cron(request: Request) -> JSONResponse:
     if not authorization_header:
         return JSONResponse({"error": "Missing authorization header"}, status_code=401)
 
-    if authorization_header != f"Bearer {os.getenv("CRON_SECRET")}":
+    if authorization_header != f"Bearer {os.getenv('CRON_SECRET')}":
         return JSONResponse({"error": "Invalid authorization header"}, status_code=403)
 
     else:

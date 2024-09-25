@@ -1,5 +1,5 @@
 # word-guessr 🔠
-Description coming soon... 💅
+This is the GitHub page for [WordGuessr](word-guessr-juules32s-projects.vercel.app), a word guessing game in the 'dle' genre, meaning you get a new puzzle every day!
 
 # How to run locally
 - Install python 😇
